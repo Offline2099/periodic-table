@@ -1,0 +1,193 @@
+<!-- Main Table -->
+@if (visibleRange$ | async; as range) {
+  <table class="table-main">
+    <thead>
+
+      <!-- Table Controls (Mobile, Tablet, Small Desktop) -->
+      @if (range !== VisibleRange.default) {
+        <tr>
+          @if (range !== VisibleRange.mobile) {
+            <td class="cell-transparent"></td>
+          }
+          <td class="cell-transparent" [attr.colspan]="range === VisibleRange.mobile ? range + 1 : range">
+            <app-table-controls [(firstVisibleGroup)]="firstVisibleGroup" [range]="range" />
+          </td>
+        </tr>
+      }
+
+      <!-- Table Group Headers -->
+      <tr>
+        <td class="cell-transparent"></td>
+        @for (group of table.main[0]; track $index) {
+          @if (
+            range === VisibleRange.default ||
+            ($index + 1 >= firstVisibleGroup() && $index + 1 < firstVisibleGroup() + range)
+          ) {
+            <th
+              class="cell-group animated"
+              [ngClass]="{
+                'hovered': $index + 1 === groupHovered,
+                'fade-in-1': fadeInState,
+                'fade-in-2': !fadeInState
+              }"
+              (mouseenter)="setHoveredGroup($index + 1)"
+              (mouseleave)="setHoveredGroup(null)">
+              Group {{$index + 1}}
+            </th>
+          }
+        }
+      </tr>
+
+    </thead>
+    <tbody>
+      @for (period of table.main; track $index; let $p = $index) {
+        <tr>
+
+          <!-- Table Period Headers -->
+          <th 
+            class="cell-period"
+            [ngClass]="{'hovered': $index + 1 === periodHovered}"
+            (mouseenter)="setHoveredPeriod($index + 1)"
+            (mouseleave)="setHoveredPeriod(null)">
+            Period {{$index + 1}}
+          </th>
+
+          <!-- Table Cells -->
+          @for (group of period; track $index; let $g = $index) {
+            @if (
+              range === VisibleRange.default ||
+              ($index + 1 >= firstVisibleGroup() && $index + 1 < firstVisibleGroup() + range)
+            ) {
+              <td
+                class="animated"
+                [ngClass]="{
+                  'hovered': $p + 1 === periodHovered || $g + 1 === groupHovered,
+                  'fade-in-1': fadeInState,
+                  'fade-in-2': !fadeInState
+                }">
+                @if (table.main[$p][$g]) {
+                  <app-element [element]="table.main[$p][$g]!" (click)="selectElement(table.main[$p][$g])" />
+                }
+              </td>
+            }
+          }
+
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+<!-- Lanthanides and Actinides (F-Block) -->
+@if (fBlockRowLength$ | async; as rowLength) {
+  @switch (rowLength) {
+
+    <!-- F-Block Mobile -->
+    @case (RowLength.mobile) {
+      <div class="f-block-container-mobile" [ngClass]="{'collapsed': isFBlockCollapsed}">
+        <div class="header" (click)="toggleFBlock()">
+          <span class="triangle">&#9654;</span>
+          Lanthanides and Actinides
+        </div>
+        <div class="body">
+          @for (series of table.fBlock; track $index) {
+            <table class="table-f-block">
+              <thead>
+                <tr>
+                  <ng-template
+                    [ngTemplateOutlet]="fBlockHeader"
+                    [ngTemplateOutletContext]="{series, isVertical: true, rowLength}"
+                  />
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of [].constructor(SERIES_LENGTH / rowLength); track $index) {
+                  <tr>
+                    <ng-template
+                      [ngTemplateOutlet]="fBlockElements"
+                      [ngTemplateOutletContext]="{
+                        series,
+                        elements: series.elements | slice : ($index * rowLength) : (($index + 1) * rowLength)
+                      }"
+                    />
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- F-Block Tablet -->
+    @case (RowLength.tablet) {
+      <div class="f-block-container-tablet">
+        @for (series of table.fBlock; track $index) {
+          <table class="table-f-block">
+            <tbody>
+              @for (row of [].constructor(rowLength); track $index) {
+                <tr>
+                  @if (!$index) {
+                    <ng-template
+                      [ngTemplateOutlet]="fBlockHeader"
+                      [ngTemplateOutletContext]="{series, isVertical: false, rowLength}"
+                    />
+                  }
+                  <ng-template
+                    [ngTemplateOutlet]="fBlockElements"
+                    [ngTemplateOutletContext]="{
+                      series,
+                      elements: series.elements | slice : ($index * rowLength) : (($index + 1) * rowLength)
+                    }"
+                  />
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+    }
+
+    <!-- F-Block Desktop -->
+    @case (RowLength.desktop) {
+      <table class="table-f-block">
+        <tbody>
+          @for (series of table.fBlock; track $index) {
+            <tr>
+              <ng-template
+                [ngTemplateOutlet]="fBlockHeader"
+                [ngTemplateOutletContext]="{series, isVertical: false, rowLength}"
+              />
+              <ng-template
+                [ngTemplateOutlet]="fBlockElements"
+                [ngTemplateOutletContext]="{series, elements: series.elements}"
+              />
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+  }
+}
+
+<!-- F-Block Header Template -->
+<ng-template #fBlockHeader let-series="series" let-isVertical="isVertical"  let-rowLength="rowLength">
+  <th
+    [attr.colspan]="isVertical ? SERIES_LENGTH / rowLength : null"
+    [attr.rowspan]="isVertical ? null : SERIES_LENGTH / rowLength"
+    [ngClass]="{'hovered': series.period === periodHovered}"
+    (mouseenter)="setHoveredGroup(series.group)"
+    (mouseleave)="setHoveredGroup(null)">
+    {{series.name}}<br />(Period&nbsp;{{series.period}})
+  </th>
+</ng-template>
+
+<!-- F-Block Cells Template -->
+<ng-template #fBlockElements let-series="series" let-elements="elements">
+  @for (element of elements; track element.number) {
+    <td [ngClass]="{'hovered': series.period === periodHovered || series.group === groupHovered}">
+      <app-element [element]="element" (click)="selectElement(element)" />
+    </td>
+  }
+</ng-template>

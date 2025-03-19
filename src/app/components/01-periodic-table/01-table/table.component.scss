@@ -1,0 +1,176 @@
+@use 'sass:color';
+@use '../../../../styles-shared' as *;
+
+:host {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  margin: 20px auto;
+  padding: 0 10px;
+  overflow: hidden;
+}
+
+.animated {
+  @include enable-blink(800ms);
+}
+
+//=============================================================================
+//  Main Table, Common Cell Styles
+//=============================================================================
+
+.table-main {  
+  width: min(2400px, 100%);
+  border-collapse: collapse;
+  @include desktop-small {
+    table-layout: fixed;
+  }
+}
+
+th {
+  @include shadow-inset(2px, $shadow-dark);
+  @include bg-lines(10px, $bg-medium-dark, 1px, $bg-medium-bright);
+  padding: 10px;
+  border-radius: 6px;
+  color: $accent-dim;
+  text-align: center;
+  font-size: 16px;
+  font-weight: normal;
+  letter-spacing: .01em;
+  transition: .2s;
+  user-select: none;
+  @include desktop-1 {
+    padding: 6px 8px;
+    font-size: 14px;
+
+  }
+  @include desktop-small {
+    &.cell-group {
+      padding: 10px 5px;
+    }
+    &.cell-period {
+      height: 25px;
+    }
+  }
+}
+
+td {
+  @include shadow-inset(2px, color.adjust($shadow-dark, $alpha: -0.5));
+  height: 64px;
+  padding: 3px;
+  background-color: color.adjust($bg-dark, $alpha: -0.3);
+  transition: .2s;
+  &.cell-transparent {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  @include desktop-3 {
+    height: 46px;
+  }
+  @include desktop-2 {
+    height: 64px;
+  }
+  @include desktop-1 {
+    padding: 2px;
+    height: 50px;
+  }
+  @include desktop-small {
+    height: 36px;
+  }
+}
+
+th,
+td {
+  &.hovered {
+    filter: brightness(1.2);
+  }
+}
+
+//=============================================================================
+//  Lanthanides and Actinides (F-Block)
+//=============================================================================
+
+.f-block-container-tablet {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.f-block-container-mobile {
+  display: flex;
+  width: min(100% - 20px, 400px);
+  flex-direction: column;
+  min-width: 295px;
+  .header {
+    display: flex;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 5px 5px 0 0;
+    color: $accent-dim;
+    background: $bg-dark;
+    cursor: pointer;
+    user-select: none;
+  }
+  &.collapsed .header {
+    border-radius: 5px;
+  }
+  .triangle {
+    margin-right: 15px;
+    color: $text-normal;
+    font-size: 14px;
+    transform: rotate(90deg);
+    transition: .2s;
+  }
+  &.collapsed .triangle {
+    transform: rotate(0deg);
+  }
+  .body {
+    @include shadow-inset(2px, color.adjust($shadow-dark, $alpha: -0.6));
+    background: color.adjust($bg-darker, $alpha: -0.25);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0;
+    border-radius: 0 0 5px 5px;
+    animation: fade-in .3s;
+  }
+  &.collapsed .body {
+    display: none;
+  }
+}
+
+.table-f-block {
+  width: min(2040px, 85%);
+  border-collapse: collapse;
+  @include desktop-3 {
+    td {
+      height: 64px;
+    }
+  }
+  @include desktop-small {
+    td {
+      height: 53px;
+    }
+  }
+  @include tablet {
+    width: calc(100% - 40px);
+    margin: 0 0 10px 0;
+    th {
+      width: 92px;
+    }
+    td {
+      height: 36px;
+    }
+  }
+  @include mobile {
+    width: 140px;
+    margin: 0 5px;
+    &:last-of-type {
+      margin-left: 0;
+    }
+    th,
+    td {
+      width: unset;
+    }
+  }
+}

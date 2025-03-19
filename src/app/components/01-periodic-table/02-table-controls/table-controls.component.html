@@ -1,0 +1,72 @@
+<!-- Mobile -->
+@if (range() === VisibleRange.mobile) {
+  <div class="controls-container">
+    <div class="controls-container-row">Show groups:</div>
+    @for (row of [].constructor(MOBILE_ROW_COUNT); track $index) {
+      <div class="controls-container-row">
+        <ng-template
+          [ngTemplateOutlet]="groupRange"
+          [ngTemplateOutletContext]="{
+            start: $index * range(),
+            length: (NUMBER_OF_GROUPS / range()) / MOBILE_ROW_COUNT,
+            isMinimal: true
+          }"
+        />
+      </div>
+    }
+  </div>
+  <div class="controls-container">
+    <div class="controls-container-row">&nbsp;</div>
+    <ng-template [ngTemplateOutlet]="previousGroup" />
+    <ng-template [ngTemplateOutlet]="nextGroup" />
+  </div>
+} 
+
+<!-- Tablet & Desktop -->
+@else {
+  <ng-template [ngTemplateOutlet]="previousGroup" />
+  <ng-template
+    [ngTemplateOutlet]="groupRange"
+    [ngTemplateOutletContext]="{
+      start: 0,
+      length: NUMBER_OF_GROUPS / range(),
+      isMinimal: false
+    }"
+  />
+  <ng-template [ngTemplateOutlet]="nextGroup" />
+}
+
+<!-- Previous Group Button Template -->
+<ng-template #previousGroup>
+  <button
+    type="button"
+    class="button-left"
+    [ngClass]="{'disabled': firstVisibleGroup() === 1}"
+    (click)="setVisibility(firstVisibleGroup() - 1)">
+    &#9664;
+  </button>
+</ng-template>
+
+<!-- Next Group Button Template -->
+<ng-template #nextGroup>
+  <button 
+    type="button"
+    class="button-right"
+    [ngClass]="{'disabled': firstVisibleGroup() === NUMBER_OF_GROUPS - range() + 1}"
+    (click)="setVisibility(firstVisibleGroup() + 1)">
+    &#9654;
+  </button>
+</ng-template>
+
+<!-- Group Range Button Template -->
+<ng-template #groupRange let-start="start" let-length="length" let-isMinimal="isMinimal">
+  @for (button of [].constructor(length); track $index) {
+    <button 
+      type="button"
+      [ngClass]="{'selected': firstVisibleGroup() === (start + $index) * range() + 1}"
+      (click)="setVisibility((start + $index) * range() + 1)">
+      {{isMinimal ? '' : 'Groups '}}
+      {{(start + $index) * range() + 1}}&hairsp;&hellip;&hairsp;{{(start + $index) * range() + range()}}
+    </button>
+  }
+</ng-template>

@@ -1,0 +1,233 @@
+@use '../../../../styles-shared' as *;
+
+:host {
+  @include shadow-inset(3px, $shadow-medium-dark);
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+  padding: 5px;
+  border-radius: 3px;
+  background-color: $bg-dark;
+  user-select: none;
+  cursor: pointer;
+  transition: .2s .2s both;
+  @include hover {
+    @include shadow-inset(3px, $shadow-bright);
+    background-color: $bg-medium-dark;
+  }
+  @include desktop-1 {
+    padding: 3px 2px 4px 2px;
+  }
+  @include desktop-small {
+    padding: 3px 2px 4px 5px;
+  }
+}
+
+//=============================================================================
+//  Cell Content
+//=============================================================================
+
+.element-number {
+  position: absolute;
+  top: 2px;
+  right: 8px;
+  color: $accent;
+  @include desktop-3 {
+    font-size: 14px;
+  }
+  @include desktop-1 {
+    right: 6px;
+    font-size: 12px;
+  }
+}
+
+.element-symbol {
+  display: flex;
+  padding: 0 3px;
+  font-size: 22px;
+  letter-spacing: .01em;
+  @include desktop-3 {
+    align-items: flex-end;
+    font-size: 22px;
+  }
+  @include desktop-1 {
+    font-size: 20px;
+  }
+  @include desktop-small {
+    font-size: 18px;
+  }
+}
+
+.element-name {
+  display: flex;
+  width: 100%;
+  padding: 0 3px;
+  font-size: 13px;
+  letter-spacing: .02em;
+  @include desktop-3 {
+    display: none;
+  }
+}
+
+//=============================================================================
+//  Element Preview
+//=============================================================================
+
+.preview {
+  @include shadow(2px, $shadow-dark);
+  position: absolute;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  width: 180px;
+  border: 2px solid $border-normal;
+  border-radius: 6px;
+  background-color: $bg-dark;
+  overflow: hidden;
+  @include hover {
+    display: none;
+  }
+  &.appear-down {
+    top: calc(100% + 10px);
+    left: -10px;
+    animation: appear-down .2s .2s both;
+  }
+  &.appear-down-right {
+    top: calc(100% + 10px);
+    left: 10px;
+    animation: appear-down-right .2s .2s both;
+  }
+  &.appear-down-left {
+    top: calc(100% + 10px);
+    right: 10px;
+    animation: appear-down-left .2s .2s both;
+  }
+  &.appear-up {
+    bottom: calc(100% + 10px);
+    left: -10px;
+    animation: appear-up .2s .2s both;
+  }
+  &.appear-up-right {
+    bottom: calc(100% + 10px);
+    left: 10px;
+    animation: appear-up-right .2s .2s both;
+  }
+  &.appear-up-left {
+    bottom: calc(100% + 10px);
+    right: 10px;
+    animation: appear-up-left .2s .2s both;
+  }
+  &-header {
+    display: flex;
+  }
+  &-number {
+    display: flex;
+    justify-content: center;
+    width: 80px;
+    padding: 2px 0;
+    background-color: $bg-bright;
+    color: $accent;
+    letter-spacing: .03em;
+    text-shadow: .5px .5px $bg-dark;
+  }
+  &-name {
+    @include bg-lines(10px, $bg-medium-dark, 2px, $bg-medium-bright);
+    display: flex;
+    flex-basis: 100%;
+    padding: 2px 10px;
+    letter-spacing: .01em;
+  }
+  &-image {
+    display: flex;
+    padding: 3px;
+    & img {
+      width: 100%;
+      border-radius: 3px;
+    }
+  }
+  &-no-image {
+    width: 100%;
+    padding: 5px 10px;
+    background: $bg-darker;
+    color: $text-dim;
+    border-radius: 3px;
+    text-align: center;
+    font-weight: 500;
+    letter-spacing: .03em;
+  }
+}
+
+@keyframes appear-down {
+  0% {
+    opacity: 0;
+    top: calc(100% + 7px);
+  }
+  100% {
+    opacity: 1;
+    top: calc(100% + 10px);
+  }
+}
+
+@keyframes appear-down-right {
+  0% {
+    opacity: 0;
+    top: calc(100% + 7px);
+    left: 7px;
+  }
+  100% {
+    opacity: 1;
+    top: calc(100% + 10px);
+    left: 10px;
+  }
+}
+
+@keyframes appear-down-left {
+  0% {
+    opacity: 0;
+    top: calc(100% + 7px);
+    right: 7px;
+  }
+  100% {
+    opacity: 1;
+    top: calc(100% + 10px);
+    right: 10px;
+  }
+}
+
+@keyframes appear-up {
+  0% {
+    opacity: 0;
+    bottom: calc(100% + 5px);
+  }
+  100% {
+    opacity: 1;
+    bottom: calc(100% + 10px);
+  }
+}
+
+@keyframes appear-up-right {
+  0% {
+    opacity: 0;
+    bottom: calc(100% + 5px);
+    left: 7px;
+  }
+  100% {
+    opacity: 1;
+    bottom: calc(100% + 10px);
+    left: 10px;
+  }
+}
+
+@keyframes appear-up-left {
+  0% {
+    opacity: 0;
+    bottom: calc(100% + 5px);
+    right: 7px;
+  }
+  100% {
+    opacity: 1;
+    bottom: calc(100% + 10px);
+    right: 10px;
+  }
+}

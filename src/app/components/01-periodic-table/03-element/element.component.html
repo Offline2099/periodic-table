@@ -1,0 +1,35 @@
+<!-- Cell Content -->
+<div class="element-number">{{element().number}}</div>
+<div class="element-symbol">{{element().symbol}}</div>
+<div class="element-name">{{element().name}}</div>
+
+<!-- Preview on Hover -->
+@if ((isPreviewAllowed$ | async) && isHovered) {
+  <div
+    class="preview"
+    [ngClass]="{
+      'appear-down': isCloseToTop() && !isCloseToLeft() && !isCloseToRight(),
+      'appear-down-right': isCloseToTop() && isCloseToLeft(),
+      'appear-down-left': isCloseToTop() && isCloseToRight(),
+      'appear-up': !isCloseToTop() && !isCloseToLeft() && !isCloseToRight(),
+      'appear-up-right': !isCloseToTop() && isCloseToLeft(),
+      'appear-up-left': !isCloseToTop() && isCloseToRight()
+    }">
+
+    <!-- Element Number and Name -->
+    <div class="preview-header">
+      <span class="preview-number">{{element().number}}</span>
+      <span class="preview-name">{{element().name}}</span>
+    </div>
+
+    <!-- Element Sample Image -->
+    <div class="preview-image">
+      @if (element().noImage) {
+        <div class="preview-no-image">No sample<br />images exist</div>
+      } @else {
+        <img src="./img/elements/{{element().number}}.webp" [alt]="element().name" />
+      }      
+    </div> 
+
+  </div>
+}

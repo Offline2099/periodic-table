@@ -1,0 +1,11 @@
+@for (line of lines; track line.id) {
+  <div
+    class="animated-line"
+    [ngStyle]="{
+      'top': line.position.x + '%',
+      'left': line.position.y + '%',
+      'animation': line.animation
+    }">
+    <span [innerHTML]="line.text"></span>
+  </div>
+}

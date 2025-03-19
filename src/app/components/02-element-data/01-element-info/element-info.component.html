@@ -1,0 +1,110 @@
+@if (element(); as element) {
+
+  <!-- Header Block -->
+  <div class="element-data-wrapper">
+
+    <!-- Element Number and Name -->
+    <div class="element-number">
+      <span class="animated" [ngClass]="{'fade-in-1': fadeInState, 'fade-in-2': !fadeInState}">
+        {{element.number}}
+      </span>
+    </div>
+    <div class="element-name">
+      <span class="animated" [ngClass]="{'fade-in-1': fadeInState, 'fade-in-2': !fadeInState}">
+        {{element.name}}
+      </span>
+    </div>
+
+    <!-- Previous/Next Element Buttons -->
+     <ng-template
+      [ngTemplateOutlet]="controls"
+      [ngTemplateOutletContext]="{
+        isHidden: isImageShown && !(onlyUpperControls$ | async),
+        type: Controls.upper
+      }"
+    />
+
+    <!-- X Button -->
+    <div class="close-button" (click)="close()">&#10005;</div>
+
+  </div>
+
+  <!-- Image Block -->
+  <div class="element-data-wrapper" [ngClass]="{'wrapper-collapsed': !isImageShown}">
+
+    <!-- Image or Placeholder -->
+    <div
+      class="image-container animated"
+      [ngClass]="{
+        'no-image': element.noImage,
+        'fade-in-1': fadeInState,
+        'fade-in-2': !fadeInState
+      }">
+      @if (element.noImage) {
+        <div class="no-image-text">No samples exist.</div>
+        <div class="no-image-text">{{element.noImageText || ' '}}</div>
+      } @else {
+        <img src="./img/elements/{{element.number}}.webp" [alt]="element.name" />
+      }
+    </div>
+
+    <!-- Previous/Next Element Buttons -->
+    <ng-template
+      [ngTemplateOutlet]="controls"
+      [ngTemplateOutletContext]="{
+        isHidden: !isImageShown || (onlyUpperControls$ | async),
+        type: Controls.lower
+      }"
+    />
+
+  </div>
+
+  <!-- Data Block -->
+  <div class="element-data-wrapper">
+
+    <!-- Sample Image Toggle Button -->
+    <button class="element-image-toggler" (click)="toggleImage()">
+      @if (isImageShown) {
+        <span class="element-image-toggler-text">&#9650; Hide Sample</span>
+      } @else {
+        <span class="element-image-toggler-text">&#9660; Show Sample</span>
+      }
+    </button>
+
+    <!-- Element Symbol -->
+    <div class="element-symbol">
+      <span class="animated" [ngClass]="{'fade-in-1': fadeInState, 'fade-in-2': !fadeInState}">
+        {{element.symbol}}
+      </span>
+    </div>
+
+    <!-- Data Table -->
+    <app-data-table [element]="element" [isImageShown]="isImageShown" />
+
+  </div>
+
+  <!-- Controls Template -->
+  <ng-template #controls let-isHidden="isHidden" let-type="type">
+    <div class="controls-block" [ngClass]="{'hidden': isHidden}">
+      <button
+        type="button"
+        [ngClass]="{
+          'disabled': element.number === 1,
+          'button-large button-left': type === Controls.lower
+        }"
+        (click)="selectElementByNumber(element.number - 1)">
+        &#9664;
+      </button>
+      <button
+        type="button"
+        [ngClass]="{
+          'disabled': element.number === LAST_ELEMENT,
+          'button-large button-right': type === Controls.lower
+        }"
+        (click)="selectElementByNumber(element.number + 1)">
+        &#9654;
+      </button>
+    </div>
+  </ng-template>
+}
+

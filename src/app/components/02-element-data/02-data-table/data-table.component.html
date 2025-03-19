@@ -1,0 +1,34 @@
+@for (property of data(); track property.id) {
+  <div
+    class="element-data-row"
+    [ngClass]="{'half-width': property.id === Property.period || property.id === Property.group}">
+
+    <!-- Property Name & Hint -->
+    <div class="data-property">
+      {{property.name}}
+      <div class="data-property-hint">?
+        <div 
+          class="data-property-hint-block"
+          [ngClass]="{
+            'block-under': !isImageShown() && $index < 2,
+            'block-wide': !isImageShown() && property.description.length > 2
+          }">
+          @for (text of property.description; track $index) {
+            <div class="data-property-hint-text">{{text}}</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Property Value -->
+    <div class="data-value">
+      <span class="animated" [ngClass]="{'fade-in-1': fadeInState, 'fade-in-2': !fadeInState}">
+        <span class="data-value-number">{{property.value}}</span>
+        @if (property.unit) {
+          <span class="data-value-unit" [innerHTML]="property.unit"></span>
+        }
+      </span>
+    </div>
+
+  </div>
+}

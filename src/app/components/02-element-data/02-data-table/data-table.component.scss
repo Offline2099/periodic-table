@@ -1,0 +1,201 @@
+@use '../../../../styles-shared' as *;
+
+:host {
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin: 8px 10px 10px 0;
+  @include mobile {
+    margin: 5px;
+  }
+}
+
+.animated {
+  @include enable-blink(1s);
+}
+
+//=============================================================================
+//  Data Row & Common Styles
+//=============================================================================
+
+.element-data-row {
+  display: flex;
+  width: 100%;
+  @include mobile {
+    flex-direction: column;
+    width: 100%;
+    margin: 0 0 2px 0;
+    &.half-width {
+      width: calc((100% - 3px) / 2);
+    }
+  }
+}
+
+@mixin element-data-row-part {
+  display: flex;
+  align-items: flex-end;
+  padding: 5px 10px;
+  background-color: $bg-medium;
+  border-radius: 4px;
+  letter-spacing: .045em;
+  transition: .2s;
+}
+
+.element-data-row {
+  @include hover {
+    .data-property,
+    .data-value {
+      background-color: $bg-medium-brighter;
+    }
+  }
+}
+
+//=============================================================================
+//  Property Name
+//=============================================================================
+
+.data-property {
+  @include element-data-row-part;
+  position: relative;
+  width: 65%;
+  margin-right: 3px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  @include desktop-small {
+    width: 55%;
+  }
+  @include tablet {
+    font-size: 15px;
+  }
+  @include mobile {
+    width: 100%;
+    margin: 0 0 2px 0;
+    background-color: $bg-medium-brighter !important;
+    border-radius: 4px 4px 0 0;
+  }
+}
+
+//=============================================================================
+//  Property Hint
+//=============================================================================
+
+.data-property-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-left: auto;
+  border-radius: 50%;
+  background-color: $bg-bright;
+  color: $text-dim;
+  font-size: 15px;
+  opacity: 0;
+  transition: .2s;
+  cursor: help;
+  user-select: none;
+  @include desktop-small {
+    display: none;
+  }
+  &-block {
+    @include shadow(2px, $bg-dark);
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    bottom: calc(100% + 5px);
+    right: -10px;
+    z-index: 500;
+    width: 340px;
+    padding: 5px 10px 8px 10px;
+    border: 2px solid $border-normal;
+    border-radius: 6px;
+    background: $bg-medium-dark;
+    animation: hint-block-appear .15s .15s both;
+    &.block-under {
+      top: calc(100% + 5px);
+      bottom: unset;
+      animation: hint-block-appear-under .15s .15s both;
+    }
+    &.block-wide {
+      width: 540px;
+    }
+  }
+  &-text {
+    margin-bottom: 5px;
+    font-size: 14px;
+    letter-spacing: .02em;
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.element-data-row {
+  @include hover {
+    .data-property-hint {
+      opacity: 1;
+      @include hover {
+        background: $bg-brighter;
+        .data-property-hint-block {
+          display: flex;
+          @include hover {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes hint-block-appear {
+  0% {
+    opacity: 0;
+    bottom: calc(100% + 2px);
+  }
+  100% {
+    opacity: 1;
+    bottom: calc(100% + 5px);
+  }
+}
+
+@keyframes hint-block-appear-under {
+  0% {
+    opacity: 0;
+    top: calc(100% + 2px);
+  }
+  100% {
+    opacity: 1;
+    top: calc(100% + 5px);
+  }
+}
+
+//=============================================================================
+//  Property Value
+//=============================================================================
+
+.data-value {
+  @include element-data-row-part;
+  flex-grow: 1;
+  justify-content: center;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  color: $accent;
+  &-unit {
+    margin-left: .5em;
+    color: $text-dim;
+  }
+  @include tablet {
+    &-number,
+    &-unit {
+      font-size: 15px;
+    }
+  }
+  @include mobile {
+    width: 100%;
+    margin: 0 0 2px 0;
+    padding: 4px 10px;
+    border-radius: 0 0 4px 4px;
+    background: $bg-medium !important;
+  }
+}

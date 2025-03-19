@@ -1,0 +1,93 @@
+@use 'sass:color';
+@use '../../../../styles-shared' as *;
+
+:host {
+  @include shadow-inset(2px, color.adjust($shadow-dark, $alpha: -0.5));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 0;
+  border-radius: 6px;
+  background-color: color.adjust($bg-dark, $alpha: -0.3);
+  user-select: none;
+  @include mobile {
+    @include shadow-inset(2px, color.adjust($shadow-dark, $alpha: -0.6));
+    background: color.adjust($bg-darker, $alpha: -0.25);
+    margin-bottom: 8px;
+    border-radius: 10px;
+  }
+}
+
+.controls-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 10px;
+  &-row {
+    display: flex;
+    justify-content: center;
+    color: $accent-dim;
+    font-size: 14px;
+    letter-spacing: .02em;
+    &:first-of-type {
+      padding-bottom: 2px;
+    }
+  }
+}
+
+button {
+  min-width: 38px;
+  height: 24px;
+  margin: 2px 4px;
+  padding: 1px 8px 3px 8px;
+  border: none;
+  border-radius: 3px;
+  background-color: $bg-medium-darker;
+  color: $text-dim;
+  text-align: center;
+  font-size: 15px;
+  letter-spacing: .01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: .3s;
+  @include hover {
+    @include shadow-inset(3px, $shadow-bright);
+  }
+  @include mobile {
+    height: 23px;
+    min-width: 70px;
+    margin: 3px;
+    font-size: 14px;
+  }
+  &.button-left,
+  &.button-right {
+    padding: 2px 5px;
+    background-color: $bg-medium-dark;
+    @include hover {
+      background-color: $bg-bright;
+      box-shadow: none;
+    }
+    @include mobile {
+      min-width: unset !important;
+      width: 32px !important;
+      margin: 3px 0 !important;
+    }
+  }
+  &.button-left {
+    margin-left: 8px;
+    margin-right: auto;
+  }
+  &.button-right {
+    margin-left: auto;
+    margin-right: 8px;
+  }
+  &.selected {
+    background: $bg-bright;
+    color: $text-normal;
+    pointer-events: none;
+  }
+  &.disabled {
+    opacity: .4;
+    pointer-events: none;
+  }
+}
