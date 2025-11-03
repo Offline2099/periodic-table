@@ -5,6 +5,8 @@ import { LANTHANIDES_GROUP, ACTINIDES_GROUP } from '../../../constants/chemistry
 import { ChemicalElement } from '../../../types/chemical-element.interface';
 import { ElementProperty } from '../../../types/element-property.interface';
 
+const UNKNOWN: string = 'Unknown';
+
 @Component({
   selector: 'app-data-table',
   imports: [NgClass],
@@ -14,6 +16,7 @@ import { ElementProperty } from '../../../types/element-property.interface';
 export class DataTableComponent {
 
   readonly Property = Property;
+  readonly UNKNOWN: string = UNKNOWN;
 
   element = input.required<ChemicalElement>();
   isImageShown = input.required<boolean>();
@@ -36,25 +39,23 @@ export class DataTableComponent {
   getPropertyValue(element: ChemicalElement, id: Property): string | number {
     switch (id) {
       case Property.period:
-        return element.period || 'N/A';
+        return element.period;
       case Property.group:
-        return element.group > 0 
-          ? element.group
-          : element.group == LANTHANIDES_GROUP
-            ? 'Lanthanides'
-            : element.group == ACTINIDES_GROUP
-              ? 'Actinides'
-              : 'N/A';
+        return element.group == LANTHANIDES_GROUP
+          ? 'Lanthanides'
+          : element.group == ACTINIDES_GROUP
+            ? 'Actinides'
+            : element.group;
       case Property.yearOfDiscovery:
         return element.discovery || 'Ancient times';
       case Property.weight:
-        return element.weight || 'N/A';
+        return element.weight;
       case Property.density:
-        return element.density || 'N/A';
+        return element.density;
       case Property.meltingPoint:
-        return element.melt > -274 ? element.melt : 'Unknown';
+        return element.melt > -274 ? element.melt : UNKNOWN;
       case Property.boilingPoint:
-        return element.boil > -274 ? element.boil : 'Unknown';
+        return element.boil > -274 ? element.boil : UNKNOWN;
     }
   }
 

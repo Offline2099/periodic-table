@@ -24,7 +24,7 @@
     <div class="data-value">
       <span class="animated" [ngClass]="{'fade-in-1': fadeInState, 'fade-in-2': !fadeInState}">
         <span class="data-value-number">{{property.value}}</span>
-        @if (property.unit) {
+        @if (property.unit && property.value !== UNKNOWN) {
           <span class="data-value-unit" [innerHTML]="property.unit"></span>
         }
       </span>
