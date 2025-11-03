@@ -19,7 +19,7 @@
      <ng-template
       [ngTemplateOutlet]="controls"
       [ngTemplateOutletContext]="{
-        isHidden: isImageShown && !(onlyUpperControls$ | async),
+        isHidden: isImageShown && !onlyUpperControls(),
         type: Controls.upper
       }"
     />
@@ -52,7 +52,7 @@
     <ng-template
       [ngTemplateOutlet]="controls"
       [ngTemplateOutletContext]="{
-        isHidden: !isImageShown || (onlyUpperControls$ | async),
+        isHidden: !isImageShown || onlyUpperControls(),
         type: Controls.lower
       }"
     />

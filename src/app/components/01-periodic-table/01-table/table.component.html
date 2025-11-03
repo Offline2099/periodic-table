@@ -1,5 +1,5 @@
 <!-- Main Table -->
-@if (visibleRange$ | async; as range) {
+@if (visibleRange(); as range) {
   <table class="table-main">
     <thead>
 
@@ -79,7 +79,7 @@
 }
 
 <!-- Lanthanides and Actinides (F-Block) -->
-@if (fBlockRowLength$ | async; as rowLength) {
+@if (fBlockRowLength(); as rowLength) {
   @switch (rowLength) {
 
     <!-- F-Block Mobile -->

@@ -1,14 +1,13 @@
 import { Component, HostListener, input, computed } from '@angular/core';
-import { AsyncPipe, NgClass } from '@angular/common';
-import { Observable, map } from 'rxjs';
+import { NgClass } from '@angular/common';
 import * as C from '../../../constants/chemistry/table-parameters';
-import { ScreenSize } from '../../../constants/screen-size';
+import { ScreenSize as Size } from '../../../constants/screen-size';
 import { ChemicalElement } from '../../../types/chemical-element.interface';
 import { LayoutService } from '../../../services/layout.service';
 
 @Component({
   selector: 'app-element',
-  imports: [AsyncPipe, NgClass],
+  imports: [NgClass],
   templateUrl: './element.component.html',
   styleUrl: './element.component.scss'
 })
@@ -31,15 +30,11 @@ export class ElementComponent {
       this.element().number === C.LAST_OF_LANTHANIDES || this.element().number === C.LAST_OF_ACTINIDES
   );
 
-  isPreviewAllowed$: Observable<boolean>;
+  isPreviewAllowed = computed<boolean>(() => 
+    ![Size.mobile, Size.tablet, Size.desktopSmall].includes(this.layout.screenSize())
+  );
   isHovered: boolean = false;
 
-  constructor(private layout: LayoutService) {
-    this.isPreviewAllowed$ = this.layout.screenSize$.pipe(
-      map(screenSize => 
-        ![ScreenSize.mobile, ScreenSize.tablet, ScreenSize.desktopSmall].includes(screenSize)
-      )
-    );
-  }
+  constructor(private layout: LayoutService) {}
 
 }

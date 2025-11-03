@@ -4,7 +4,7 @@
 <div class="element-name">{{element().name}}</div>
 
 <!-- Preview on Hover -->
-@if ((isPreviewAllowed$ | async) && isHovered) {
+@if (isPreviewAllowed() && isHovered) {
   <div
     class="preview"
     [ngClass]="{

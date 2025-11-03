@@ -1,13 +1,15 @@
-import { Component, signal, model, effect } from '@angular/core';
-import { AsyncPipe, NgClass, NgTemplateOutlet, SlicePipe } from '@angular/common';
-import { Observable, map, tap } from 'rxjs';
+import { Component, signal, model, effect, computed } from '@angular/core';
+import { NgClass, NgTemplateOutlet, SlicePipe } from '@angular/common';
+// Constants & Enums
 import { ELEMENTS } from '../../../constants/chemistry/chemical-elements';
 import * as C from '../../../constants/chemistry/table-parameters';
-import { ScreenSize } from '../../../constants/screen-size';
 import { VisibleRange, FBlockRowLength } from '../../../constants/table-layout';
+// Interfaces
 import { ChemicalElement } from '../../../types/chemical-element.interface';
+// Components
 import { TableControlsComponent } from '../02-table-controls/table-controls.component';
 import { ElementComponent } from '../03-element/element.component';
+// Services
 import { LayoutService } from '../../../services/layout.service';
 import { UtilityService } from '../../../services/utility.service';
 
@@ -38,7 +40,7 @@ const Actinides: Omit<FBlockSeries, 'elements'> = {
 @Component({
   selector: 'app-table',
   imports: [
-    AsyncPipe, NgClass, NgTemplateOutlet, SlicePipe,
+    NgClass, NgTemplateOutlet, SlicePipe,
     TableControlsComponent, ElementComponent
   ],
   templateUrl: './table.component.html',
@@ -58,21 +60,19 @@ export class TableComponent {
   groupHovered: number | null = null;
 
   firstVisibleGroup = signal<number>(1);
-  visibleRange$: Observable<VisibleRange>;
-  fBlockRowLength$: Observable<FBlockRowLength>;
+  visibleRange = computed<VisibleRange>(() => 
+    this.layout.getTableVisibleRange(this.layout.screenSize())
+  );
+  fBlockRowLength = computed<FBlockRowLength>(() => 
+    this.layout.getFBlockRowLength(this.layout.screenSize())
+  );
   isFBlockCollapsed: boolean = true;
   
   fadeInState: boolean = true;
 
   constructor(private layout: LayoutService, private utility: UtilityService) {
     this.table = this.constructTable();
-    this.visibleRange$ = this.layout.screenSize$.pipe(
-      tap(screenSize => this.preventInvalidState(screenSize)),
-      map(screenSize => this.layout.getTableVisibleRange(screenSize)),
-    );
-    this.fBlockRowLength$ = this.layout.screenSize$.pipe(
-      map(screenSize => this.layout.getFBlockRowLength(screenSize))
-    );
+    effect(() => this.preventInvalidState(this.visibleRange()));
     effect(() => { if (this.firstVisibleGroup()) this.blink() });
   }
 
@@ -96,10 +96,9 @@ export class TableComponent {
     }
   }
 
-  preventInvalidState(screenSize: ScreenSize): void {
-    const range: number = this.layout.getTableVisibleRange(screenSize);
-    if (this.firstVisibleGroup() + range >= C.NUMBER_OF_GROUPS) {
-      this.firstVisibleGroup.set(C.NUMBER_OF_GROUPS - range + 1);
+  preventInvalidState(visibleRange: VisibleRange): void {
+    if (this.firstVisibleGroup() + visibleRange >= C.NUMBER_OF_GROUPS) {
+      this.firstVisibleGroup.set(C.NUMBER_OF_GROUPS - visibleRange + 1);
     }
   }
 

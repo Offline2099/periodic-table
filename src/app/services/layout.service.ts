@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
-import { Observable, map } from 'rxjs';
+import { map } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { BREAKPOINTS, ScreenSize } from '../constants/screen-size';
 import { VisibleRange, FBlockRowLength } from '../constants/table-layout';
 
@@ -9,12 +10,12 @@ import { VisibleRange, FBlockRowLength } from '../constants/table-layout';
 })
 export class LayoutService {
 
-  screenSize$: Observable<ScreenSize>;
+  screenSize: Signal<ScreenSize>;
 
   constructor(private observer: BreakpointObserver) {
-    this.screenSize$ = this.observer.observe(Object.values(BREAKPOINTS)).pipe(
+    this.screenSize = toSignal(this.observer.observe(Object.values(BREAKPOINTS)).pipe(
       map(breakpointState => this.getScreenSize(breakpointState))
-    );
+    ), { requireSync: true });
   }
 
   private getScreenSize(breakpointState: BreakpointState): ScreenSize {
